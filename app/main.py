@@ -1,15 +1,6 @@
-from fastapi import FastAPI, Request, HTTPException
-from config.database import database, engine, metadata
-from app.models.passengers import passengers
-from datetime import datetime
-from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from app.requests import travels
 
-metadata.create_all(engine)
+app = FastAPI(title="API for reservations", version="1.0.0")
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-  await database.connect()
-  yield
-  await database.disconnect()
-
-app = FastAPI(lifespan=lifespan)
+app.include_router(travels.router, prefix="/travels", tags=["Travels"])
