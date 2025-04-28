@@ -6,7 +6,6 @@ from app.models.travels import Travel
 
 router = APIRouter()
 
-# Función para obtener la sesión de base de datos
 def get_db():
   db = SessionLocal()
   try:
