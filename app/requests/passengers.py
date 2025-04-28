@@ -3,6 +3,12 @@ from sqlalchemy.orm import Session
 from app.services.passangers_service import create_passenger, get_passenger_by_id, update_passenger
 from config.database import SessionLocal
 from app.models.passengers import Passenger
+from dotenv import load_dotenv
+import os
+import httpx
+
+load_dotenv('.env')
+external_url = os.getenv("EXTERNAL_URL")
 
 router = APIRouter()
 
@@ -60,4 +66,16 @@ def update_passenger_endpoint(
       raise HTTPException(status_code=404, detail="Passenger not found")
 
   updated_passenger = update_passenger(db=db, payload=payload, passenger=passenger)
-  return updated_passenger
+  return update_external(payload, updated_passenger)
+
+
+def update_external(payload, passenger):
+  data = {
+    "name": payload.get("name"),
+    "last_name": payload.get("last_name"),
+    "birthdate": payload.get("birthdate")
+  }
+
+  with httpx.Client() as client:
+    client.put(external_url + 'passengers/'+ str(passenger.id), json=data)
+  return passenger
