@@ -1,12 +1,11 @@
 from sqlalchemy import Table, Column, Integer, String
-from config.database import metadata
+from config.database import Base
 from datetime import datetime
 
-reservations = Table(
-    "reservations",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("passanger_id", String(10), foreignKey="passengers.id"),
-    Column("travel_id", String(10), foreignKey="travels.id"),
-    Column("register_time", datetime.utcnow)
-)
+class Reservation(Base):
+    __tablename__ = "reservations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    passenger_id = Column(String(10))
+    travel_id = Column(String(10))
+    register_time = Column(String(100))
